@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './firebase'; // Import Firebase auth
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -13,23 +11,18 @@ const LoginPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      // Sign in the user
-      const userCredential = await signInWithEmailAndPassword(auth, formData.email, formData.password);
-      const user = userCredential.user;
-      console.log('User Logged In:', user);
-
-      // Redirect to dashboard or another page upon success
-    } catch (error) {
-      console.error('Error logging in:', error.message);
-    }
+    console.log('Login Data:', formData);
+    // You can send `formData` to your backend here
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white p-6 rounded-lg shadow-lg w-96"
+      >
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
         <label className="block text-sm font-medium text-gray-700">Email:</label>
@@ -43,7 +36,9 @@ const LoginPage = () => {
           required
         />
 
-        <label className="block text-sm font-medium text-gray-700">Password:</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Password:
+        </label>
         <input
           type="password"
           name="password"
