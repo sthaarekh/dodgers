@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import imageCompression from "browser-image-compression";
 const SignupPage = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     image:'',
   });
-  const [image,setImage] = useState();
 const convertToBase64 = async (e) => {
   if (!e.target.files[0]) {
     console.error('No file selected');
@@ -38,7 +39,6 @@ const convertToBase64 = async (e) => {
       reader.onload = () => {
         if (reader.result) {
           resolve(reader.result);
-          setImage(reader.result);
           formData.image = reader.result;
         } else {
           reject(new Error('reader.result is null or undefined'));
@@ -87,7 +87,13 @@ const convertToBase64 = async (e) => {
       }
   
       const result = await response.json();
-      console.log("Success:", result);
+       // Assuming result contains a userId or token
+       const { userId } = result;
+
+       // Store the userId or token for future use
+       localStorage.setItem('userId', userId);
+
+       navigate(`/home/${userId}`);
     } catch (error) {
       console.error("Error:", error);
     }

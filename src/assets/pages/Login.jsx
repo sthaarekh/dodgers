@@ -1,20 +1,46 @@
 import React, { useState } from 'react';
-
-const LoginPage = () => {
+import { useNavigate } from 'react-router';
+const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Login Data:', formData);
-    // You can send `formData` to your backend here
+
+    try {
+      const response = await fetch('http://localhost:9010/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid email or password');
+      }
+
+      const data = await response.json();
+      console.log('Login Success:', data);
+
+      // Store the JWT token if necessary
+      localStorage.setItem('token', data.token);
+
+      navigate(`/home/${data.userId}`);
+      // Redirect the user to their home page
+    } catch (error) {
+      console.error('Error:', error);
+      alert(error.message); // Show error to user
+    }
   };
 
   return (
@@ -60,4 +86,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default Login;
