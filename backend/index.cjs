@@ -7,7 +7,7 @@ const port = 9010
 
 // Use CORS middleware with specific origin
 app.use(cors({
-  origin: `http://localhost:5173`, // Allow requests from this origin
+  origin: `http://192.168.1.7:5173`, // Allow requests from this origin
   methods: ['GET', 'POST', 'DELETE'], // Specify allowed methods
   credentials: true // If your frontend needs to send cookies, you might need this
 }));

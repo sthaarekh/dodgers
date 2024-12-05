@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Video Call</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
   <div id="lobby-section">
@@ -13,15 +14,24 @@
     <button id="join-btn">Join</button>
   </div>
 
-  <div id="call-section" style="display: none;">
-    <h2>Call in Progress</h2>
-    <!-- <p>Room ID: <span id="room-id-display"></span></p>
-    <p>Local User: <span id="local-username"></span></p>
-    <p>Remote User: <span id="remote-username"></span></p> -->
-    <video id="local-video" autoplay muted playsinline></video>
-    <video id="remote-video" autoplay playsinline></video>
-    <button id="hangup-btn">Hang Up</button>
+  <div id="call-section" class="hidden fixed inset-0 bg-gray-800 bg-opacity-80 flex flex-col items-center justify-center p-6">
+    <div class="w-full max-w-4xl bg-gray-900 p-8 rounded-lg shadow-xl">
+      <h2 class="text-3xl font-semibold text-center text-white mb-6">Call in Progress</h2>
+  
+      <span id="room-id-display" class="hidden"></span>
+      <span id="local-username" class="hidden"></span>
+      <span id="remote-username" class="hidden"></span>
+  
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <video id="local-video" class="w-full rounded-lg border-2 border-gray-600" autoplay muted playsinline></video>
+        <video id="remote-video" class="w-full rounded-lg border-2 border-gray-600" autoplay playsinline></video>
+      </div>
+      <button id="hangup-btn" class="w-full py-3 px-6 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300 ease-in-out transform hover:scale-105">
+        Hang Up
+      </button>
+    </div>
   </div>
+  
 
   <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
   <script src="./call-page.js"></script>

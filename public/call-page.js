@@ -1,24 +1,17 @@
-// Listen for messages from the parent window
+// Ensure this code runs in the context of the popup
 window.addEventListener('message', (event) => {
-	if (event.origin !== window.location.origin) {
-		console.error('Message from unknown origin:', event.origin);
-		return;
-	  }
-	
-	  // Log and get the JSON data
-	  const data = event.data;
-	  console.log('Received JSON data in call-page.js:', data);
-	
-	  // Fill the input fields with the received data
-	  const roomInput = document.getElementById('room-input');
-	  const userNameInput = document.getElementById('username-input');
-	
-	  if (data.roomId) roomInput.value = data.roomId;
-	  if (data.userName) userNameInput.value = data.userName;
+    // Verify the origin for security
+    if (event.origin !== 'https://192.168.1.7:5173') {
+      alert('Origin mismatch, message discarded:', event.origin);
 
-	  document.getElementById('join-btn').click();
-  });
-
+    }
+  
+    // Access and process the data
+    const receivedData = event.data;
+    alert('Data received:', receivedData);
+  
+    // You can now use the received data
+  }, true);
 class VideoCall {
     constructor(config = {}) {
         this.configuration = {
@@ -41,7 +34,7 @@ class VideoCall {
         this.remoteUserName = null;
 
         // Connect to the backend server on localhost:3000
-        this.socket = io('https://localhost:3000', {
+        this.socket = io('https://192.168.1.7:3000', {
             reconnection: true,
             reconnectionAttempts: 5,
             reconnectionDelay: 1000,

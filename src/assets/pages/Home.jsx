@@ -10,7 +10,7 @@ const Home = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`http://localhost:9010/api/auth/${userId}`);
+        const response = await axios.get(`http://192.168.1.7:9010/api/auth/${userId}`);
         setUserData(response.data);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -31,28 +31,31 @@ const Home = () => {
     'https://via.placeholder.com/150',
   ];
 
-  const handleImageClick = () => {
-    const jsonData = {
-      roomId: '12345',
-      userName: 'John Doe',
-    };
-  
-    const callWindow = window.open(
-      '/call-page.html', // Path to your standalone HTML file
-      'VideoCall',
-      'width=1200,height=800,resizable=yes,scrollbars=yes'
-    );
-  
-    if (callWindow) {
-      callWindow.focus();
-      // Send the JSON data to the popup window after it loads
-      callWindow.onload = () => {
-        callWindow.postMessage(jsonData, window.location.origin);
-      };
-    } else {
-      alert('Popup blocked! Please allow popups for this site.');
-    }
+ const handleImageClick = () => {
+  const jsonData = {
+    roomId: '12345',
+    userName: 'John Doe',
   };
+
+  // Open the new URL in a popup window
+  const callWindow = window.open(
+    'https://192.168.1.7:3000',  // Update the URL here
+    'VideoCall',
+    'width=1200,height=800,resizable=yes,scrollbars=yes'
+  );
+
+  if (callWindow) {
+    callWindow.focus();
+
+    // Send the JSON data to the popup window after it loads
+    callWindow.onload = () => {
+      callWindow.postMessage(jsonData, 'https://192.168.1.7:3000'); // Match the origin here
+    };
+  } else {
+    alert('Popup blocked! Please allow popups for this site.');
+  }
+};
+
   
 
   return (

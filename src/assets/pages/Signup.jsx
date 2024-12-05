@@ -74,7 +74,7 @@ const convertToBase64 = async (e) => {
       image: formData.image,
     };
     try {
-      const response = await fetch("http://localhost:9010/api/auth", {
+      const response = await fetch("http://192.168.1.7:9010/api/auth", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
