@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Call</title>
+</head>
+<body>
+  <div id="lobby-section">
+    <h2>Join a Call</h2>
+    <input id="room-input" placeholder="Enter Room ID" />
+    <input id="username-input" placeholder="Enter Your Name" />
+    <button id="join-btn">Join</button>
+  </div>
+
+  <div id="call-section" style="display: none;">
+    <h2>Call in Progress</h2>
+    <!-- <p>Room ID: <span id="room-id-display"></span></p>
+    <p>Local User: <span id="local-username"></span></p>
+    <p>Remote User: <span id="remote-username"></span></p> -->
+    <video id="local-video" autoplay muted playsinline></video>
+    <video id="remote-video" autoplay playsinline></video>
+    <button id="hangup-btn">Hang Up</button>
+  </div>
+
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <script src="./call-page.js"></script>
+</body>
+</html>

@@ -32,8 +32,28 @@ const Home = () => {
   ];
 
   const handleImageClick = () => {
-    navigate('/calls');
+    const jsonData = {
+      roomId: '12345',
+      userName: 'John Doe',
+    };
+  
+    const callWindow = window.open(
+      '/call-page.html', // Path to your standalone HTML file
+      'VideoCall',
+      'width=1200,height=800,resizable=yes,scrollbars=yes'
+    );
+  
+    if (callWindow) {
+      callWindow.focus();
+      // Send the JSON data to the popup window after it loads
+      callWindow.onload = () => {
+        callWindow.postMessage(jsonData, window.location.origin);
+      };
+    } else {
+      alert('Popup blocked! Please allow popups for this site.');
+    }
   };
+  
 
   return (
     <div className="h-screen w-screen">

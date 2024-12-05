@@ -17,4 +17,4 @@ app.use('/api/auth',require('./routes/auth.cjs'));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
-})
+});
