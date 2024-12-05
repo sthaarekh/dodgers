@@ -92,4 +92,30 @@ router.get('/:userId', async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
+router.get('/user', async (req, res) => {
+  try {
+    // Retrieve all users, selecting only name and image fields
+    const users = await User.find({}).select('name, image');
+    
+    // Check if no users found
+    if (!users || users.length === 0) {
+      return res.status(404).json({ message: 'No users found' });
+    }
+
+    // Map users to return only necessary information
+    const userList = users.map(user => ({
+      id: user._id,
+      name: user.name,
+      image: user.image
+    }));
+
+    res.json(userList);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ 
+      message: 'Server error', 
+      error: error.message 
+    });
+  }
+});
 module.exports = router;
