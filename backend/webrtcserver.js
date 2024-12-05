@@ -4,29 +4,25 @@ const socketIo = require('socket.io');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const cors = require('cors');
 
-class WebRTCService {
-    constructor(app, options = {}) {
-        this.app = app;
+class WebRTCServer {
+    constructor(options = {}) {
+        this.app = express();
         this.port = process.env.PORT || 3000;
         this.host = '0.0.0.0';
         this.maxRoomParticipants = options.maxRoomParticipants || 2;
         this.rooms = {};
 
-        this.setupSocketServer(options.sslOptions);
-        this.setupRoutes();
+        this.setupServer();
+        this.configureMiddleware();
         this.setupSocketHandlers();
     }
 
-    setupSocketServer(sslOptions = {}) {
-        // If no SSL options provided, use default or generate temporary ones
-        if (Object.keys(sslOptions).length === 0) {
-            sslOptions = {
-                key: fs.readFileSync(path.join(__dirname, 'key.pem')),
-                cert: fs.readFileSync(path.join(__dirname, 'cert.pem'))
-            };
-        }
+    setupServer() {
+        const sslOptions = {
+            key: fs.readFileSync(path.join(__dirname, 'key.pem')),
+            cert: fs.readFileSync(path.join(__dirname, 'cert.pem'))
+        };
 
         this.server = https.createServer(sslOptions, this.app);
         this.io = socketIo(this.server, {
@@ -37,67 +33,13 @@ class WebRTCService {
         });
     }
 
-    setupRoutes() {
-        // API routes for room management
-        this.app.get('/api/rooms', this.getRooms.bind(this));
-        this.app.post('/api/rooms', this.createRoom.bind(this));
-        this.app.get('/api/rooms/:roomId', this.getRoomDetails.bind(this));
-    }
-
-    // API endpoint to get all active rooms
-    getRooms(req, res) {
-        try {
-            const roomList = Object.keys(this.rooms).map(roomId => ({
-                roomId,
-                participants: this.rooms[roomId].length,
-                maxParticipants: this.maxRoomParticipants
-            }));
-            res.json(roomList);
-        } catch (error) {
-            res.status(500).json({ error: 'Failed to retrieve rooms' });
-        }
-    }
-
-    // API endpoint to create a new room (optional)
-    createRoom(req, res) {
-        const { roomId, userName } = req.body;
-
-        if (!roomId || !userName) {
-            return res.status(400).json({ error: 'Room ID and User Name are required' });
-        }
-
-        if (this.rooms[roomId] && this.rooms[roomId].length >= this.maxRoomParticipants) {
-            return res.status(409).json({ error: 'Room is full' });
-        }
-
-        // Initialize the room if it doesn't exist
-        this.rooms[roomId] = this.rooms[roomId] || [];
-
-        res.status(201).json({
-            roomId,
-            participants: this.rooms[roomId].length,
-            maxParticipants: this.maxRoomParticipants
+    configureMiddleware() {
+        this.app.use(express.static(path.join(__dirname, '../public')));
+        this.app.get('/', (req, res) => {
+            res.sendFile(path.join(__dirname, '../public', 'index.html'));
         });
     }
 
-    // API endpoint to get details of a specific room
-    getRoomDetails(req, res) {
-        const { roomId } = req.params;
-
-        if (!this.rooms[roomId]) {
-            return res.status(404).json({ error: 'Room not found' });
-        }
-
-        res.json({
-            roomId,
-            participants: this.rooms[roomId].map(user => ({
-                id: user.id,
-                name: user.name
-            })),
-            participantCount: this.rooms[roomId].length,
-            maxParticipants: this.maxRoomParticipants
-        });
-    }
 
     setupSocketHandlers() {
         this.io.on('connection', (socket) => {
@@ -105,10 +47,9 @@ class WebRTCService {
     
             socket.on('join-room', (roomData) => this.handleJoinRoom(socket, roomData));
             socket.on('disconnect', () => this.handleDisconnect(socket));
-            socket.on('leave-room', (roomId) => this.handleLeaveRoom(socket, roomId));
+            socket.on('leave-room', () => this.handleLeaveRoom(socket));
         });
     }
-
     handleJoinRoom(socket, roomData) {
         const { roomId, userName } = roomData;
     
@@ -154,6 +95,7 @@ class WebRTCService {
         });
     }
     
+
     handleLeaveRoom(socket, roomId) {
         socket.leave(roomId);
         if (this.rooms[roomId]) {
@@ -172,6 +114,7 @@ class WebRTCService {
             }
         }
     }
+
 
     handleDisconnect(socket) {
         Object.keys(this.rooms).forEach((roomId) => {
@@ -198,11 +141,11 @@ class WebRTCService {
             }
         });
     }
+    
 
-    // Start the WebSocket server
     start() {
         this.server.listen(this.port, this.host, () => {
-            console.log(`WebRTC Socket Server running on port ${this.port}`);
+            console.log(`Server running on port ${this.port}`);
             console.log(`Access via localhost: https://localhost:${this.port}`);
 
             const networkInterfaces = os.networkInterfaces();
@@ -217,8 +160,4 @@ class WebRTCService {
     }
 }
 
-// Export a function to initialize the WebRTC service
-module.exports = (app, options = {}) => {
-    const webrtcService = new WebRTCService(app, options);
-    return webrtcService;
-};
+module.exports = WebRTCServer;

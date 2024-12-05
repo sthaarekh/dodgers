@@ -6,7 +6,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sock": "nodemon ./backend/socket-server.js",
+    "back": "nodemon ./backend/index.cjs"
   },
   "dependencies": {
     "autoprefixer": "^10.4.20",
