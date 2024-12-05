@@ -7,6 +7,7 @@ import Signup from './assets/pages/Signup'
 import Call from './assets/pages/Call'
 import Addcontacts from './assets/pages/Addcontacts'
 import Landing from './assets/pages/Landing'
+import LandingPage from './assets/pages/Landing'
 
 function App() {
 
@@ -17,7 +18,8 @@ function App() {
   {/* Router dom */}
   <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home/>} />
+        <Route path="/" element={<LandingPage/>} />
+        <Route path="/home" element={<Home/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/call" element={<Call/>} />

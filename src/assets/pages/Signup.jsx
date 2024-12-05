@@ -17,11 +17,33 @@ const SignupPage = () => {
     setFormData({ ...formData, image: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form Data:', formData);
-    // You can send `formData` to your backend here
+  const handleSubmit = async (formData) => {
+    const form = new FormData();
+    form.append('name', formData.name);
+    form.append('email', formData.email);
+    form.append('password', formData.password);
+    if (formData.image) {
+      form.append('image', formData.image); // Append image file
+    }
+  
+    try {
+      const response = await fetch('http://localhost:9010/api/auth', {
+        method: 'POST',
+        body: form,
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to upload');
+      }
+  
+      const data = await response.json();
+      console.log('Response:', data);
+    } catch (err) {
+      console.error('Error:', err);
+      // Show the error message in the UI, if needed
+    }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -78,7 +100,7 @@ const SignupPage = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 teyxt-white py-2 rounded font-semibold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full bg-blue-500 text-white py-2 rounded font-semibold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           Sign Up
         </button>
