@@ -5,7 +5,6 @@ connectToMongo();
 const app = express()
 const port = 9010
 
-
 // Use CORS middleware with specific origin
 app.use(cors({
   origin: `http://localhost:5173`, // Allow requests from this origin
