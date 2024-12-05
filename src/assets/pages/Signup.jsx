@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './firebase'; // Import Firebase auth
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -17,18 +19,32 @@ const SignupPage = () => {
     setFormData({ ...formData, image: e.target.files[0] });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Data:', formData);
-    // You can send `formData` to your backend here
+    try {
+      // Create user with email and password
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      const user = userCredential.user;
+      console.log('User Created:', user);
+
+      // You can store additional data like name, image in Firestore (if required)
+      // You can upload the image to Firebase Storage as well if needed
+
+      // Clear form data
+      setFormData({
+        name: '',
+        email: '',
+        password: '',
+        image: null,
+      });
+    } catch (error) {
+      console.error('Error signing up:', error.message);
+    }
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-lg w-96"
-      >
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
 
         <label className="block text-sm font-medium text-gray-700">Name:</label>
@@ -53,9 +69,7 @@ const SignupPage = () => {
           required
         />
 
-        <label className="block text-sm font-medium text-gray-700">
-          Password:
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Password:</label>
         <input
           type="password"
           name="password"
@@ -66,9 +80,7 @@ const SignupPage = () => {
           required
         />
 
-        <label className="block text-sm font-medium text-gray-700">
-          Upload Image:
-        </label>
+        <label className="block text-sm font-medium text-gray-700">Upload Image:</label>
         <input
           type="file"
           accept="image/*"
@@ -78,7 +90,7 @@ const SignupPage = () => {
 
         <button
           type="submit"
-          className="w-full bg-blue-500 teyxt-white py-2 rounded font-semibold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full bg-blue-500 text-white py-2 rounded font-semibold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
         >
           Sign Up
         </button>

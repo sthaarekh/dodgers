@@ -17,12 +17,13 @@ function App() {
   {/* Router dom */}
   <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home/>} />
+        <Route path="/" element={<Landing/>} />
+        <Route path="/home" element={<Home/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/call" element={<Call/>} />
         <Route path="/add" element={<Addcontacts/>} />
-        <Route path="/land" element={<Landing/>} />
+
 
       </Routes>
       </BrowserRouter>
