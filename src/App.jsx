@@ -12,6 +12,8 @@ function App() {
   return (
     <>
   <Navbar/>
+
+  {/* Router dom */}
   <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home/>} />
