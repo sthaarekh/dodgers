@@ -1,32 +1,69 @@
 import './App.css'
 import Navbar from './assets/components/Navbar'
 import Navbarh from './assets/components/Navbarh'
-import { Routes, Route, BrowserRouter, useLocation } from 'react-router-dom'
+import { Routes, Route, BrowserRouter, useLocation, Navigate } from 'react-router-dom'
 import Home from './assets/pages/Home'
 import Login from './assets/pages/Login'
 import Signup from './assets/pages/Signup'
 import Call from './assets/pages/Call'
 import Addcontacts from './assets/pages/Addcontacts'
 import Landing from './assets/pages/Landing'
-
+import PropTypes from "prop-types";
 
 // Wrapper component to handle conditional navbar rendering
 function NavbarWrapper() {
   const location = useLocation();
   const noNavbarRoutes = ['/login', '/signup', '/'];
+const isAuthenticated = () => {
+  return localStorage.getItem('userToken') !== null; // or use context/state if you have it
+};
+
+// PrivateRoute Component to protect routes
+const PrivateRoute = (props) => {
+  return isAuthenticated() ? props.children : <Navigate to="/login" />;
+};
+PrivateRoute.propTypes = {
+  children: PropTypes.node.isRequired, // Ensures 'children' is passed and is valid JSX/element
+};
+
 
   return (
     <>
-      {noNavbarRoutes.includes(location.pathname) ? <Navbar /> : <Navbarh />}
-      <Routes>
-        <Route path="/" element={<Landing/>} />
-        <Route path="/home/:userId" element={<Home/>} />
-        <Route path="/login" element={<Login/>} />
-        <Route path="/signup" element={<Signup/>} />
-        <Route path="/call" element={<Call/>} />
-        <Route path="/add" element={<Addcontacts/>} />
-      </Routes>
-    </>
+    {noNavbarRoutes.includes(location.pathname) ? <Navbar /> : <Navbarh />}
+    <Routes>
+      <Route path="/" element={<Landing />} />
+      {/* Protect home route */}
+      <Route
+        path="/home/:userId"
+        element={
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      {/* Protect call route */}
+      <Route
+        path="/call"
+        element={
+          <PrivateRoute>
+            <Call />
+          </PrivateRoute>
+        }
+      />
+      {/* Protect add route */}
+      <Route
+        path="/add"
+        element={
+          <PrivateRoute>
+            <Addcontacts />
+          </PrivateRoute>
+        }
+      />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
+    </Routes>
+  </>
   );
 }
 
