@@ -15,7 +15,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log('Login Data:', formData);
-
+  
     try {
       const response = await fetch('http://localhost:9010/api/auth/login', {
         method: 'POST',
@@ -24,24 +24,25 @@ const Login = () => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (!response.ok) {
         throw new Error('Invalid email or password');
       }
-
+  
       const data = await response.json();
       console.log('Login Success:', data);
-
+  
       // Store the JWT token if necessary
       localStorage.setItem('token', data.token);
-
-      navigate(`/home/${data.userId}`);
-      // Redirect the user to their home page
+  
+      console.log('Navigating to:', `/home/${data.userId}`);
+      navigate(`/home/${data.userId}`); // Redirect the user to their home page
     } catch (error) {
       console.error('Error:', error);
       alert(error.message); // Show error to user
     }
   };
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">

@@ -14,14 +14,18 @@ import PropTypes from "prop-types";
 function NavbarWrapper() {
   const location = useLocation();
   const noNavbarRoutes = ['/login', '/signup', '/'];
-const isAuthenticated = () => {
-  return localStorage.getItem('userToken') !== null; // or use context/state if you have it
-};
+
 
 // PrivateRoute Component to protect routes
-const PrivateRoute = (props) => {
-  return isAuthenticated() ? props.children : <Navigate to="/login" />;
+const PrivateRoute = ({ children }) => {
+  const isAuthenticated = () => {
+    const token = localStorage.getItem('token'); // Check for token or any other auth logic
+    return !!token; // Return true if authenticated
+  };
+
+  return isAuthenticated() ? children : <Navigate to="/login" />;
 };
+
 PrivateRoute.propTypes = {
   children: PropTypes.node.isRequired, // Ensures 'children' is passed and is valid JSX/element
 };
