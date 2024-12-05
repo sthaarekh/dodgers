@@ -8,6 +8,7 @@ import Signup from './assets/pages/Signup'
 import Call from './assets/pages/Call'
 import Addcontacts from './assets/pages/Addcontacts'
 import Landing from './assets/pages/Landing'
+import LandingPage from './assets/pages/Landing'
 
 // Wrapper component to handle conditional navbar rendering
 function NavbarWrapper() {
@@ -18,7 +19,7 @@ function NavbarWrapper() {
     <>
       {noNavbarRoutes.includes(location.pathname) ? <Navbar /> : <Navbarh />}
       <Routes>
-        <Route path="/home" element={<Home/>} />
+        <Route path="/" element={<Home/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/call" element={<Call/>} />

@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
-
+import { Link } from 'react-router-dom';
 const LandingPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white">
@@ -12,7 +11,7 @@ const LandingPage = () => {
       </p>
 
       <div className="flex space-x-6">
-        <Link to="signup">
+      <Link to="signup">
         <button className="py-3 px-6 bg-white text-blue-500 font-medium rounded-full hover:bg-blue-100 transition duration-300">
           Signup
         </button>
