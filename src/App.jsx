@@ -6,12 +6,13 @@ import Login from './assets/pages/Login'
 import Signup from './assets/pages/Signup'
 import Call from './assets/pages/Call'
 import Addcontacts from './assets/pages/Addcontacts'
+import Landing from './assets/pages/Landing'
 
 function App() {
 
   return (
     <>
-  <Navbar/>
+  {/* <Navbar/> */}
 
   {/* Router dom */}
   <BrowserRouter>
@@ -20,7 +21,9 @@ function App() {
         <Route path="/login" element={<Login/>} />
         <Route path="/signup" element={<Signup/>} />
         <Route path="/call" element={<Call/>} />
-        <Route path="/call" element={<Addcontacts/>} />
+        <Route path="/add" element={<Addcontacts/>} />
+        <Route path="/land" element={<Landing/>} />
+
       </Routes>
       </BrowserRouter>
     </>
