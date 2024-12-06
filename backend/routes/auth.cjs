@@ -34,7 +34,7 @@ router.post(
         email,
         name,
         password,
-        image, // Directly store the base64 image
+        image, 
       });
 
       // Generate a JWT token
@@ -118,4 +118,46 @@ router.get('/user', async (req, res) => {
     });
   }
 });
+router.put('/users/:id/add-contact', async (req, res) => {
+  const userId = req.params.id; // ID of the user to whom we add the contact
+  const contactId = req.body.contactId; // ID of the contact to add
+
+  try {
+    // Validate if the contactId exists
+    const contact = await User.findById(contactId);
+    if (!contact) {
+      return res.status(404).json({ message: 'Contact user not found' });
+    }
+
+    // Add contactId to the contacts array
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { contacts: contactId } }, // $addToSet ensures no duplicates
+      { new: true } // Returns the updated document
+    ).populate('contacts'); // Populate contacts for better response
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'Contact added successfully', user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
+router.get('/users/:id/contacts', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const user = await User.findById(userId).populate('contacts', 'name image');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ contacts: user.contacts });
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error', error: error.message });
+  }
+});
+
 module.exports = router;
